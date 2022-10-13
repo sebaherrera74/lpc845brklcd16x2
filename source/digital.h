@@ -81,7 +81,7 @@ typedef enum{
 
 void gpioInitOutput(GPIO_Type *base,gpio_port_en port, gpio_portpin_en pin, gpio_nivel_logico nivellogico);
 
-
+void gpioOutputOn(GPIO_Type *base,gpio_port_en port,gpio_portpin_en pin);
 
 
 

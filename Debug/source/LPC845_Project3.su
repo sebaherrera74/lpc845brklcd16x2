@@ -1,6 +1,0 @@
-core_cm0plus.h:850:22:__NVIC_SetPriority	24	static
-core_cm0plus.h:1056:26:SysTick_Config	16	static
-fsl_gpio.h:210:20:GPIO_PortToggle	24	static
-LPC845_Project3.c:49:10:SysTick_Handler	8	static
-LPC845_Project3.c:57:10:SysTick_DelayTicks	16	static
-LPC845_Project3.c:73:5:main	16	static

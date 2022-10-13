@@ -114,6 +114,11 @@ int main(void) {
         GPIO_PortToggle(GPIO,0,1U << 17);
         for (i=0;i<250000;i++);
         GPIO_PortToggle(GPIO,0,1U << 16);
+
+        gpioOutputOn(GPIO, GPIO_PORT_0,GPIO_PORTPIN_0_17);
+
+
+
     }
     return 0 ;
 }
