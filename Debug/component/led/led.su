@@ -1,0 +1,13 @@
+fsl_common.h:552:28:DisableGlobalIRQ	16	static
+fsl_common.h:583:24:EnableGlobalIRQ	24	static
+led.c:128:21:LED_SetStatus	40	static
+led.c:172:13:LED_TimerEvent	32	static
+led.c:304:14:LED_Init	48	static
+led.c:426:14:LED_Deinit	32	static
+led.c:487:14:LED_TurnOnOff	32	static
+led.c:501:14:LED_SetColor	24	static
+led.c:519:14:LED_Flash	40	static
+led.c:559:14:LED_Blip	24	static
+led.c:570:14:LED_Dimming	16	static
+led.c:652:14:LED_EnterLowpower	16	static
+led.c:691:14:LED_ExitLowpower	16	static
