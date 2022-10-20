@@ -87,14 +87,7 @@ int main(void) {
 	while(1) {
 
 
-		//LED_BLUE_TOGGLE();
-		gpioOutputWrite(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_17,GPIO_Nivel_alto);
-		 delayMs(1000);
-		 gpioOutputToogle(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_16);
-
-
-		 gpioOutputWrite(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_17,GPIO_Nivel_bajo);
-		 delayMs(1000);
+		LED_BLUE_TOGGLE();
 
 	}
 	return 0 ;

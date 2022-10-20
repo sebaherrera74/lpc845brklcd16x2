@@ -16,15 +16,7 @@ unsigned char BitNum;
 /*****************************************************************
 *****  LCD initialization routine  (4 bit/8bit interface defined)  ****
 *****************************************************************/
-void DelayMs(int milisegundos){
-	for(int i=0; i<milisegundos;i++){
 
-	}
-}
-
-void DelayUs(int microsegundos ){
-	for(int i=0; i<microsegundos;i++);
-}
 
 void  InitLCD_8b_1L(void)
 {
@@ -51,44 +43,66 @@ void  InitLCD_8b_1L(void)
 	DelayMs(2);*/
 }
 
-void  InitLCD_8b_2L(void) // Serve per chi alimenta a 5V o usa l'integrato
-{
-	//SYSCON->SYSAHBCLKCTRL[0] |= 1<<6;   // Turn on clock to GPIO0
-	//INIT_BUS		 //P0.[23:16,1:0] definition: FULL_BUS_CLEAR; FULL_BUS_OUT
-	DelayMs(100000);	 // Delay a minimum of time serves when LCD is just plugged
-	//LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
+void  lcd16x2Init_8b_2L(void){
+/*
+   // Configure LCD Pins as Outputs
+   lcdInitPinAsOutput( LCD_HD44780_RS );
+   lcdInitPinAsOutput( LCD_HD44780_RW );
+   lcdInitPinAsOutput( LCD_HD44780_EN );
+   lcdInitPinAsOutput( LCD_HD44780_D4 );
+   lcdInitPinAsOutput( LCD_HD44780_D5 );
+   lcdInitPinAsOutput( LCD_HD44780_D6 );
+   lcdInitPinAsOutput( LCD_HD44780_D7 );
 
-	//LPC_GPIO_PORT->SET[0] = DB5_PIN; // DB7=0, DB6=0, DB5=1, DB4=1, NU=0, EN=0, RW=0, RS=0
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00300000);
 
-	//LPC_GPIO_PORT->SET[0] = DB4_PIN; // SETS 8-bit operation
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00100000);
+   // Configure LCD for 4-bit mode
+   lcd16x2PinSet( LCD_HD44780_RW, OFF );     // RW = 0
+   lcdPinSet( LCD_HD44780_RS, OFF );     // RS = 0
+   lcdPinSet( LCD_HD44780_EN, OFF );     // EN = 0
 
-	//LPC_GPIO_PORT->SET[0] = 1<<(DB4_PIN_SHIFT-1); // set the number of lines
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00080000);
+   lcd16x2Command( 0x33 );                   // Command 0x33 for 4-bit mode
+   lcdCommandDelay();                    // Wait
 
-	DelayUs(1000);		 // Wait a minimum of 195ns
+   lcdCommand( 0x32 );                   // Command 0x32 for 4-bit mode
+   lcdCommandDelay();                    // Wait
 
-	//LPC_GPIO_PORT->CLR[0] = EN;		 // Clear EN finish write operation
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
+   lcdCommand( 0x28 );                   // Command 0x28 for 4-bit mode
+   lcdCommandDelay();                    // Wait
 
-	DelayUs(10000);		 // Wait a minimum between the two cycles
+   // Initialize LCD
+   lcdCommand( 0x0E );                   // Command 0x0E for display on, cursor on
+   lcdCommandDelay();                    // Wait
 
-	//LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
+   lcdClear();                           // Command for clear LCD
 
-	DelayUs(1000);
+   lcdCommand( 0x06 );                   // Command 0x06 for Shift cursor right
+   lcdCommandDelay();                    // Wait
 
-	//LPC_GPIO_PORT->CLR[0] = EN;		 // Raise EN start write operation
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	BitNum = 1;
+   lcdDelay_ms( 1 );                     // Waitstatic void lcdPinSet( uint8_t pin, bool_t status )
 
-	PutCommand(ENTRY_MODE_INC_NO_SHIFT);
-	PutCommand(DISP_ON_CUR_ON_BLINK_ON);
-	PutCommand(DISPLAY_CLEAR);
-	DelayMs(2000);
+   lcdGoToXY( 0, 0 );
+
+*/
+
 }
+
+
+void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status){
+
+	gpioOutputWrite(GPIO ,GPIO_PORT_0,pin,status);
+
+}
+
+void lcd16x2EnablePulse( void ){
+
+	lcd16x2PinSet( GPIO_PORTPIN_0_28,GPIO_Nivel_alto);       // EN = 1 for H-to-L pulse
+    delayMs(1);   // Wait to make EN wider //lcdDelay_us(1);
+    lcd16x2PinSet( GPIO_PORTPIN_0_28, GPIO_Nivel_bajo);      // EN = 0 for H-to-L pulse
+    delayMs(1);
+}
+
+
+
 
 void  InitLCD_4b_1L(void) // Alternativa in uso a 3.3 V con più PIN liberi
 {/*
@@ -136,8 +150,7 @@ void  InitLCD_4b_2L(void)
 ***************************************/
 void PutCommand(int Command)
 {
-	DelayMs(1000);							// Wait until LCD is free
-	WriteByte(ISTR, Command);		// Write character to IR
+
 
 }
 
@@ -146,15 +159,7 @@ void PutCommand(int Command)
 ***************************************************/
 void WriteInitial(unsigned char LineOfCharacters[LCD_LINE_VISIBLE])
 {
-	unsigned char i=0;
 
-	PutCommand(LINE1_HOME);
-	DelayUs(1000); // Ci riporta all'inizio della memoria del Display
-	while(LineOfCharacters[i] && i<LCD_LINE_VISIBLE)
-	{
-		WriteAscii(LineOfCharacters[i]);
-		i++;
-	}
 }
 
 /**************************************************
@@ -178,8 +183,7 @@ void WriteAll(unsigned char lineOfCharacters[LCD_LINE_LENGHT])
 ***************************************/
 void WriteAscii(unsigned char symbol)
 {
-	DelayMs(1000);							// Wait until LCD is free
-	WriteByte(DATA, symbol);	// Write character to DR
+
 
 }
 
@@ -189,49 +193,7 @@ void WriteAscii(unsigned char symbol)
 ***************************************/
 void WriteByte(unsigned char rs, int data_to_LCD)
 {
-	unsigned int dataVal;
-	int variable;
-	if(rs)
-		GPIO_PortSet(GPIO, GPIO_PORT_0, 0x04000000);
-		//LPC_GPIO_PORT->SET[0] = RS;								// Set RS (DR operation)
-	else
-		GPIO_PortClear(GPIO, GPIO_PORT_0, 0x04000000);
-		//LPC_GPIO_PORT->CLR[0] = RS;								// Clear RS (IR operation)
 
-	DelayUs(1);									// Wait a minimum of 60ns
-	if (BitNum){
-		//LPC_GPIO_PORT->SET[0] = EN;									// Set EN in order to start first write operation
-		GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-		dataVal = data_to_LCD << (DB4_PIN_SHIFT-4);		// shift left on dataVal to align DB7:DB4 on DATA_BUS
-		variable=GPIO_PortRead(GPIO, GPIO_PORT_0);
-		variable=(variable & ~DATA_BUS)|dataVal;
-
-
-		//LPC_GPIO_PORT->PIN[0] = (LPC_GPIO_PORT->PIN[0] & ~DATA_BUS)|dataVal;		// data bus reflects upper nibble
-
-		DelayUs(1000);									// Wait a minimum of 195ns
-
-		//LPC_GPIO_PORT->CLR[0] = EN;									// Clear EN finish first write operation
-		GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-
-		DelayUs(1000);} // Wait a minimum of 530ns between writes*/
-	/*
-	else	{
-		LPC_GPIO_PORT->SET[0] = EN;									// Set EN in order to start first write operation
-		dataVal = data_to_LCD & 0xF0;				// Copy upper nibble into dataVal
-		dataVal = dataVal << (DB4_PIN_SHIFT-4);		// shift left on dataVal to align DB7:DB4 on DATA_BUS
-		LPC_GPIO_PORT->PIN[0] = (LPC_GPIO_PORT->PIN[0] & ~DATA_BUS)|dataVal;		// data bus reflects upper nibble
-		DelayUs(1);									// Wait a minimum of 195ns
-		LPC_GPIO_PORT->CLR[0] = EN;									// Clear EN finish first write operation
-		DelayUs(1);									// Wait a minimum of 530ns between writes
-		LPC_GPIO_PORT->SET[0] = EN;									// Raise EN start second write operation
-		dataVal = data_to_LCD & 0x0F;				// Copy lower nibble into dataVal
-		dataVal = dataVal << DB4_PIN_SHIFT;			// shift left on dataVal to align DB4
-		LPC_GPIO_PORT->PIN[0] = (LPC_GPIO_PORT->PIN[0] & ~DATA_BUS)|dataVal;		// data bus reflects lower nibble
-		DelayUs(1);									// Wait a minimum of 195ns
-		LPC_GPIO_PORT->CLR[0] = EN;									// Clear EN finish first write operation
-		DelayUs(1);
-	}*/
 }
 
 

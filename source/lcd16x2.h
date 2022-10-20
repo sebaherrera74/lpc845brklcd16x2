@@ -17,6 +17,7 @@
 #include "fsl_gpio.h"
 #include "digital.h"
 #include "LPC845.h"
+#include "delay.h"
 
 #define EN				    (1<<1)		// P0.01 is EN
 #define RS				(1<<0)		// P0.00 is RS
@@ -83,7 +84,14 @@
 void WriteByte(unsigned char rs, int data_to_LCD);
 void InitLCD_4b_1L(void);
 void InitLCD_8b_1L(void);
-void InitLCD_4b_2L(void); // Use only with 5V separate supply or Charge Pump
+void  lcd16x2Init_8b_2L(void);
+
+//Escribe un nivel alto o bajo en el Pin del micro
+void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status);
+
+//Habilita el Pin EN y lo desabilita
+void lcd16x2EnablePulse( void );
+
 void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
 void WriteAscii(unsigned char symbol);
 void PutCommand(int Command);
@@ -99,7 +107,6 @@ void Write_ndigitsval_space(unsigned int dummyVal, unsigned char ndigits);
 void Write_2digitsval(unsigned int dummyVal);
 void Write_HDval(unsigned int dummyVal);
 void Write_HDval2(unsigned int dummyVal);
-void DelayMs(int milisegundos);
-void DelayUs(int microsegundos );
+
 /* END HD44780 */
 #endif /* __HD44780_H*/
