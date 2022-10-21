@@ -1,21 +1,22 @@
 /* ###################################################################
-**	Filename: HD44780.c
-**  Project: 
-**	Processor: LPC2103
-**	Compiler: gcc version 4.1.1
-**	Date: 16/11/2009
-**	Abstract:
-**		HD44780.c source file (user routines)
-** 	Modified: 
-** 			InitLCD() function: initializing by instruction procedure
-** ###################################################################*/
+ **	Filename: HD44780.c
+ **  Project:
+ **	Processor: LPC2103
+ **	Compiler: gcc version 4.1.1
+ **	Date: 16/11/2009
+ **	Abstract:
+ **		HD44780.c source file (user routines)
+ ** 	Modified:
+ ** 			InitLCD() function: initializing by instruction procedure
+ ** ###################################################################*/
 
 #include <lcd16x2.h>
 
 unsigned char BitNum;
 /*****************************************************************
-*****  LCD initialization routine  (4 bit/8bit interface defined)  ****
-*****************************************************************/
+ *****  LCD initialization routine  (4 bit/8bit interface defined)  ****
+ *****************************************************************/
+
 
 
 void  InitLCD_8b_1L(void)
@@ -44,7 +45,7 @@ void  InitLCD_8b_1L(void)
 }
 
 void  lcd16x2Init_8b_2L(void){
-/*
+	/*
    // Configure LCD Pins as Outputs
    lcdInitPinAsOutput( LCD_HD44780_RS );
    lcdInitPinAsOutput( LCD_HD44780_RW );
@@ -82,7 +83,7 @@ void  lcd16x2Init_8b_2L(void){
 
    lcdGoToXY( 0, 0 );
 
-*/
+	 */
 
 }
 
@@ -96,12 +97,21 @@ void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status){
 void lcd16x2EnablePulse( void ){
 
 	lcd16x2PinSet( GPIO_PORTPIN_0_28,GPIO_Nivel_alto);       // EN = 1 for H-to-L pulse
-    delayMs(1);   // Wait to make EN wider //lcdDelay_us(1);
-    lcd16x2PinSet( GPIO_PORTPIN_0_28, GPIO_Nivel_bajo);      // EN = 0 for H-to-L pulse
-    delayMs(1);
+	delayMs(1);   // Wait to make EN wider //lcdDelay_us(1);
+	lcd16x2PinSet( GPIO_PORTPIN_0_28, GPIO_Nivel_bajo);      // EN = 0 for H-to-L pulse
+	delayMs(1);
 }
 
+void lcdCommand( uint32_t cmd ){
 
+
+	gpioMultOutputOn(GPIO,GPIO_PORT_0,cmd);
+	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_bajo );   // RS = 0 for command
+	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
+	lcd16x2EnablePulse();
+	delayMs(1);       // Wait
+	lcd16x2EnablePulse();
+}
 
 
 void  InitLCD_4b_1L(void) // Alternativa in uso a 3.3 V con più PIN liberi
@@ -146,8 +156,8 @@ void  InitLCD_4b_2L(void)
 }
 
 /**************************************
-*****    Send a command to LCD     ****
-***************************************/
+ *****    Send a command to LCD     ****
+ ***************************************/
 void PutCommand(int Command)
 {
 
@@ -155,16 +165,16 @@ void PutCommand(int Command)
 }
 
 /**************************************************
-*****    Write a string on LCD visible part    ****
-***************************************************/
+ *****    Write a string on LCD visible part    ****
+ ***************************************************/
 void WriteInitial(unsigned char LineOfCharacters[LCD_LINE_VISIBLE])
 {
 
 }
 
 /**************************************************
-*****    Write a string on LCD total line      ****
-***************************************************/
+ *****    Write a string on LCD total line      ****
+ ***************************************************/
 void WriteAll(unsigned char lineOfCharacters[LCD_LINE_LENGHT])
 {/*
 	unsigned char i=0;
@@ -179,8 +189,8 @@ void WriteAll(unsigned char lineOfCharacters[LCD_LINE_LENGHT])
 }
 
 /**************************************
-*****   Write a character on LCD   ****
-***************************************/
+ *****   Write a character on LCD   ****
+ ***************************************/
 void WriteAscii(unsigned char symbol)
 {
 
@@ -189,8 +199,8 @@ void WriteAscii(unsigned char symbol)
 
 
 /**************************************
-*****     Write a byte on LCD      ****
-***************************************/
+ *****     Write a byte on LCD      ****
+ ***************************************/
 void WriteByte(unsigned char rs, int data_to_LCD)
 {
 
@@ -198,8 +208,8 @@ void WriteByte(unsigned char rs, int data_to_LCD)
 
 
 /*************************************************************
-*****    Write in line after current position on LCD     ****
-**************************************************************/
+ *****    Write in line after current position on LCD     ****
+ **************************************************************/
 void WriteAfter(unsigned char LineOfCharacters[LCD_LINE_LENGHT])
 {/*
 	unsigned char i=0;
@@ -213,8 +223,8 @@ void WriteAfter(unsigned char LineOfCharacters[LCD_LINE_LENGHT])
 
 
 /**************************************
-*****     Write 2 digit on LCD     ****
-***************************************/
+ *****     Write 2 digit on LCD     ****
+ ***************************************/
 void Write_2digitsval(unsigned int dummyVal)
 {/*
 	WriteAscii(NUM_TO_CODE(dummyVal/10));
@@ -223,8 +233,8 @@ void Write_2digitsval(unsigned int dummyVal)
 }
 
 /**************************************
-*****     Write n digit on LCD     ****
-***************************************/
+ *****     Write n digit on LCD     ****
+ ***************************************/
 void Write_ndigitsval_space(unsigned int dummyVal, unsigned char ndigits)
 {/*
 	int ten_base=1, digit, leading_zeroes_flag = 1;
@@ -269,12 +279,12 @@ void Write_ndigitsval(unsigned int dummyVal, unsigned char ndigits)
 
 	for (i=0;i<(ndigits+1);i++)
 			{PutCommand(CURSOR_MOVE_SHIFT_RIGHT);}
-*/
+ */
 }
 
 /************************************************
-*****     Write HexaDecimal digit on LCD     ****
-************************************************/
+ *****     Write HexaDecimal digit on LCD     ****
+ ************************************************/
 void Write_HDval(unsigned int dummyVal)
 {/*
 	unsigned char HDchar[4] = {0, 0, 0, 0};; // 4 è il massimo di byte che ci servono per
@@ -337,8 +347,8 @@ void Write_HDval2(unsigned int dummyVal)
 }
 
 /****************************************************
-*****     Shows the right side of RAM characters ****
-*****************************************************/
+ *****     Shows the right side of RAM characters ****
+ *****************************************************/
 
 void DisplayLeft(unsigned char nplaces)
 {/*
@@ -353,8 +363,8 @@ void DisplayLeft(unsigned char nplaces)
 }
 
 /****************************************************
-*****     Shows the left side of RAM characters ****
-*****************************************************/
+ *****     Shows the left side of RAM characters ****
+ *****************************************************/
 
 void DisplayRight(unsigned char nplaces)
 {/*

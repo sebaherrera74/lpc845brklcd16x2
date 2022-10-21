@@ -19,8 +19,24 @@
 #include "LPC845.h"
 #include "delay.h"
 
-#define EN				    (1<<1)		// P0.01 is EN
-#define RS				(1<<0)		// P0.00 is RS
+
+// Pin  Funcion en el display
+#define ENABLE 0x10000000 //-> 28 Enable
+#define RW     0x08000000 //-> 27 RW
+#define RS     0x04000000 //-> 26 RS
+// 0x02000000 -> 25
+// 0x01000000 -> 24
+#define D7     0x00800000 //-> 23 D7
+#define D6     0x00400000 // ->22 D6
+#define D5     0x00200000 // ->21 D5
+#define D4     0x00100000 // ->20 D4
+#define D3     0x00080000 // ->19 D3
+#define D2     0x000400000 // ->18 D2
+#define D1     0x000200000  //->17 D1
+#define D0     0x00010000  //->16  D0
+
+
+
 #define DATA_BUS		(15<<16 | 15<<20)	// P0.[23:16]
 #define DATA_BUS_LN		(15<<16)	// P0.[19:16]
 #define DB4_PIN_SHIFT	20			// DB4 is on P0.20
@@ -92,6 +108,8 @@ void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status);
 //Habilita el Pin EN y lo desabilita
 void lcd16x2EnablePulse( void );
 
+
+void lcdCommand( uint32_t cmd );
 void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
 void WriteAscii(unsigned char symbol);
 void PutCommand(int Command);

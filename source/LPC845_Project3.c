@@ -89,90 +89,10 @@ int main(void) {
 
 		LED_BLUE_TOGGLE();
 
+		lcdCommand( D4 );
 	}
 	return 0 ;
 }
-
-/* Force the counter to be placed into memory. */
-	//int i = 0 ;
-	/* Enter an infinite loop, just incrementing a counter. */
-
-	/*//for (i=0;i<250000;i++);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00380000);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x003800000);
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x000700000);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x00070000);
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x04480000);
-	GPIO_PortClear(GPIO, GPIO_PORT_0,0x04000000);
-
-
-	//GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00300000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00300000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x003C0000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<25;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<25;i++);
-
-	//GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00080000);
-	//GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<2500;i++);
-	//GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<2500;i++);
-
-
-	//GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00010000);
-	//GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<2500;i++);
-	//GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<2500;i++);
-
-
-
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00070000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x000F0000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x00020000);
-	GPIO_PortSet(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-	GPIO_PortClear(GPIO, GPIO_PORT_0, 0x10000000);
-	//for (i=0;i<250;i++);
-*/
-
-	 //unsigned char LineOfCharacters[]={'H','O','l','a'};
-
-	 //InitLCD_8b_2L();
-
-	 //WriteInitial(LineOfCharacters);
 
 
 

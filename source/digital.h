@@ -89,7 +89,8 @@ void gpioOutputToogle(GPIO_Type *base,gpio_port_en port,gpio_portpin_en pin);
 
 void gpioOutputWrite(GPIO_Type *base,gpio_port_en port,gpio_portpin_en pin,gpio_nivel_logico nivellogico);
 
-
+//Enciendo multiples salidas mediante una mascara
+void gpioMultOutputOn(GPIO_Type *base,gpio_port_en port,uint32_t mask);
 
 
 #endif /* DIGITAL_H_ */
