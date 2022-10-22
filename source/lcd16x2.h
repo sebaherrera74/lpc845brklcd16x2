@@ -31,10 +31,11 @@
 #define D5     0x00200000 // ->21 D5
 #define D4     0x00100000 // ->20 D4
 #define D3     0x00080000 // ->19 D3
-#define D2     0x000400000 // ->18 D2
-#define D1     0x000200000  //->17 D1
+#define D2     0x00040000 // ->18 D2
+#define D1     0x00020000  //->17 D1
 #define D0     0x00010000  //->16  D0
-
+#define CLEAR  0x00010000  //-> cLEAR
+#define OFFD0D7 0x00FF0000  // con esta macro puedo poner en '0' desde D0 a D7
 
 
 #define DATA_BUS		(15<<16 | 15<<20)	// P0.[23:16]
@@ -109,7 +110,10 @@ void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status);
 void lcd16x2EnablePulse( void );
 
 
-void lcdCommand( uint32_t cmd );
+void lcd16X2Command( uint32_t cmd );
+void lcd16X2Clear( void );
+
+
 void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
 void WriteAscii(unsigned char symbol);
 void PutCommand(int Command);

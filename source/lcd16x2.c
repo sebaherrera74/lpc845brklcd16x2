@@ -45,45 +45,35 @@ void  InitLCD_8b_1L(void)
 }
 
 void  lcd16x2Init_8b_2L(void){
-	/*
-   // Configure LCD Pins as Outputs
-   lcdInitPinAsOutput( LCD_HD44780_RS );
-   lcdInitPinAsOutput( LCD_HD44780_RW );
-   lcdInitPinAsOutput( LCD_HD44780_EN );
-   lcdInitPinAsOutput( LCD_HD44780_D4 );
-   lcdInitPinAsOutput( LCD_HD44780_D5 );
-   lcdInitPinAsOutput( LCD_HD44780_D6 );
-   lcdInitPinAsOutput( LCD_HD44780_D7 );
+
+	// Configure LCD for 8-bit mode
+	lcd16x2PinSet( GPIO_PORTPIN_0_27, GPIO_Nivel_bajo);     // RW = 0
+	lcd16x2PinSet(  GPIO_PORTPIN_0_26,GPIO_Nivel_bajo);     // RS = 0
+	lcd16x2PinSet( GPIO_PORTPIN_0_28, GPIO_Nivel_bajo);     // EN = 0
+
+	lcd16X2Command(D5|D4 );
+	delayMs(25);                    // Wait
+
+	lcd16X2Command(D5|D4 );
+	delayMs(25);                   // Wait
+
+	lcd16X2Command(D5|D4 );
+	delayMs(25);
 
 
-   // Configure LCD for 4-bit mode
-   lcd16x2PinSet( LCD_HD44780_RW, OFF );     // RW = 0
-   lcdPinSet( LCD_HD44780_RS, OFF );     // RS = 0
-   lcdPinSet( LCD_HD44780_EN, OFF );     // EN = 0
+	// Initialize LCD
+	lcd16X2Command( D5|D4|D3|D2 );                 // Command 0x0E for display on, cursor on
+	delayMs(25);
 
-   lcd16x2Command( 0x33 );                   // Command 0x33 for 4-bit mode
-   lcdCommandDelay();                    // Wait
+	lcd16X2Clear();                                // Command for clear LCD
 
-   lcdCommand( 0x32 );                   // Command 0x32 for 4-bit mode
-   lcdCommandDelay();                    // Wait
+	lcd16X2Command(D3|D2|D1|D0);                   // Command 0x06 for Shift cursor right
+	delayMs(10);                                   // Wait
 
-   lcdCommand( 0x28 );                   // Command 0x28 for 4-bit mode
-   lcdCommandDelay();                    // Wait
+	delayMs(10);
 
-   // Initialize LCD
-   lcdCommand( 0x0E );                   // Command 0x0E for display on, cursor on
-   lcdCommandDelay();                    // Wait
 
-   lcdClear();                           // Command for clear LCD
 
-   lcdCommand( 0x06 );                   // Command 0x06 for Shift cursor right
-   lcdCommandDelay();                    // Wait
-
-   lcdDelay_ms( 1 );                     // Waitstatic void lcdPinSet( uint8_t pin, bool_t status )
-
-   lcdGoToXY( 0, 0 );
-
-	 */
 
 }
 
@@ -102,15 +92,23 @@ void lcd16x2EnablePulse( void ){
 	delayMs(1);
 }
 
-void lcdCommand( uint32_t cmd ){
+void lcd16X2Command( uint32_t cmd ){
 
-
+	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	delayMs(1);       // Wait
 	gpioMultOutputOn(GPIO,GPIO_PORT_0,cmd);
 	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_bajo );   // RS = 0 for command
 	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
 	lcd16x2EnablePulse();
 	delayMs(1);       // Wait
 	lcd16x2EnablePulse();
+	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+
+}
+
+void lcd16X2Clear( void ){
+	lcd16X2Command( CLEAR );                   // Command 0x01 for clear LCD
+	delayMs(5);                               // Wait
 }
 
 

@@ -29,6 +29,10 @@ void gpioMultOutputOn(GPIO_Type *base,gpio_port_en port,uint32_t mask){
 	GPIO_PortSet(base,port, mask);
 }
 
+void gpioMultOutputOff(GPIO_Type *base,gpio_port_en port,uint32_t mask){
+	GPIO_PortClear(base,port, mask);
+}
+
 void gpioOutputWrite(GPIO_Type *base,gpio_port_en port,gpio_portpin_en pin,gpio_nivel_logico nivellogico){
 	GPIO_PinWrite(base, port, pin, nivellogico);
 

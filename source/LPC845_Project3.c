@@ -84,12 +84,17 @@ int main(void) {
 
 	PRINTF("Hello World\n");
 
-	while(1) {
+	 lcd16x2Init_8b_2L();
 
+	while(1) {
+		delayMs(5000);
 
 		LED_BLUE_TOGGLE();
 
-		lcdCommand( D4 );
+
+		delayMs(5000);
+
+		delayMs(5000);
 	}
 	return 0 ;
 }

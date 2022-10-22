@@ -92,5 +92,8 @@ void gpioOutputWrite(GPIO_Type *base,gpio_port_en port,gpio_portpin_en pin,gpio_
 //Enciendo multiples salidas mediante una mascara
 void gpioMultOutputOn(GPIO_Type *base,gpio_port_en port,uint32_t mask);
 
+//Apago  multiples salidas mediante una mascara
+void gpioMultOutputOff(GPIO_Type *base,gpio_port_en port,uint32_t mask);
+
 
 #endif /* DIGITAL_H_ */
