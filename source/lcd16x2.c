@@ -13,38 +13,38 @@
 #include <lcd16x2.h>
 
 unsigned char BitNum;
+/*==================[definiciones y macros]==================================*/
+
+/*==================[definiciones de datos internos]=========================*/
+typedef struct {
+	uint16_t ancholinea;
+	uint16_t cantidadlineas;
+	uint16_t anchocaracter;
+	uint16_t alturacaracter;
+	uint8_t x;
+	uint8_t y;
+} lcd_t;
+
+/*==================[definiciones de datos externos]=========================*/
+
+static lcd_t lcd;
+
+
+
 /*****************************************************************
  *****  LCD initialization routine  (4 bit/8bit interface defined)  ****
  *****************************************************************/
 
-
-
-void  InitLCD_8b_1L(void)
+void lcd16x2Init(uint16_t ancholinea,uint16_t cantidadlineas,
+		uint16_t anchocaracter,uint16_t alturacaracter)
 {
-	/*
-	LPC_SYSCON->SYSAHBCLKCTRL[0] |= 1<<6;   // Turn on clock to GPIO0
-	INIT_BUS		 //P0.[23:16,1:0] definition: FULL_BUS_CLEAR; FULL_BUS_OUT
-	DelayMs(10);	 // Delay a minimum of time serves when LCD is just plugged
+	lcd.ancholinea=ancholinea;
+	lcd.cantidadlineas=cantidadlineas;
+	lcd.anchocaracter=anchocaracter;
+	lcd.alturacaracter=alturacaracter;
+	lcd.x=0;
+	lcd.y=0;
 
-    LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	LPC_GPIO_PORT->SET[0] = DB5_PIN; // DB7=0, DB6=0, DB5=1, DB4=1, NU=0, EN=0, RW=0, RS=0
-	LPC_GPIO_PORT->SET[0] = DB4_PIN; // SETS 8-bit operation
-//	LPC_GPIO_PORT->SET[0] = 1<<(DB4_PIN_SHIFT-1); // Select 2 line-Display
-	DelayUs(1);		 // Wait a minimum of 195ns
-	LPC_GPIO_PORT->CLR[0] = EN;		 // Clear EN finish write operation
-	DelayUs(10);		 // Wait a minimum between the two cycles
-	LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	DelayUs(1);
-	LPC_GPIO_PORT->CLR[0] = EN;		 // Raise EN start write operation
-	BitNum = 1;
-	PutCommand(ENTRY_MODE_INC_NO_SHIFT);
-	PutCommand(DISP_ON_CUR_ON_BLINK_ON);
-
-	PutCommand(DISPLAY_CLEAR);
-	DelayMs(2);*/
-}
-
-void  lcd16x2Init_8b_2L(void){
 
 	// Configure LCD for 8-bit mode
 	lcd16x2PinSet( GPIO_PORTPIN_0_27, GPIO_Nivel_bajo);     // RW = 0
@@ -60,21 +60,20 @@ void  lcd16x2Init_8b_2L(void){
 	lcd16X2Command(D5|D4 );
 	delayMs(25);
 
-
 	// Initialize LCD
-	lcd16X2Command( D5|D4|D3|D2 );                 // Command 0x0E for display on, cursor on
+	//Se informa el tipo de interfaz que se va a usar, 4 o 8 bits(D4=1 8bits). La
+	//cantidad de líneas (D3=1 2 lineas). La fuente de caracter 5x8 dots o 5x10 (D2=1)dots.
+	lcd16X2Command( D5|D4|D3|D2);                 // Command 0x0E for display on, cursor on
 	delayMs(25);
 
 	lcd16X2Clear();                                // Command for clear LCD
 
+	//Configura el estado ON/OFF del display (D2=1 enciende display), el estado del cursor (D1 =1 avtiva cursor)
+	//el parpadeo del caracter en la posición del cursor(D0=1 parpadea caracter).
 	lcd16X2Command(D3|D2|D1|D0);                   // Command 0x06 for Shift cursor right
 	delayMs(10);                                   // Wait
 
 	delayMs(10);
-
-
-
-
 }
 
 
@@ -101,14 +100,14 @@ void lcd16X2Command( uint32_t cmd ){
 	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
 	lcd16x2EnablePulse();
 	delayMs(1);       // Wait
-	lcd16x2EnablePulse();
+	//lcd16x2EnablePulse();
 	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
 
 }
 
 void lcd16x2Data( uint32_t data ){
 
-	data=data<<16;
+	data=data<<16;                   //Es porque quiero manejar desde el pin 16 (D0)  al pin 23 (D7)
 	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_alto );   // RS = 1 for command
 	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
 	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
@@ -117,76 +116,74 @@ void lcd16x2Data( uint32_t data ){
 
 	lcd16x2EnablePulse();
 	delayMs(1);       // Wait
-	//lcd16x2EnablePulse();
-	//gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
-	/*
-   lcdSendNibble( data & 0xF0 );         // Send high nibble to D7-D4
 
-   lcdPinSet( LCD_HD44780_RS, ON );    // RS = 1 for data
-   lcdPinSet( LCD_HD44780_RW, OFF );   // RW = 0 for write
-
-   lcdEnablePulse();
-
-   lcdSendNibble( data << 4 );           // Send low nibble to D7-D4
-   lcdEnablePulse();*/
 }
 
-// FUNCION MANDA TODO EL TEXTO
+// FUNCION MANDA TODO EL TEXTO no controa el final del display
 void lcd16x2SendStringRaw( char* str ){
-   uint8_t i = 0;
-   while( str[i] != 0 ) {
-      lcd16x2Data( str[i] );
-      i++;
-   }
+	uint8_t i = 0;
+	while( str[i] != 0 ) {
+		lcd16x2Data( str[i] );
+		i++;
+	}
 }
-
 
 void lcd16X2Clear( void ){
 	lcd16X2Command( CLEAR );                   // Command 0x01 for clear LCD
 	delayMs(5);                               // Wait
 }
 
+void lcd16x2GoToXY(uint8_t x,uint8_t y){
 
-void  InitLCD_4b_1L(void) // Alternativa in uso a 3.3 V con più PIN liberi
-{/*
-	LPC_SYSCON->SYSAHBCLKCTRL[0] |= 1<<6;   // Turn on clock to GPIO0
-	INIT_BUS;		 //P0.[23:16,1:0] definition: FULL_BUS_CLEAR; FULL_BUS_OUT
-	DelayMs(10);	 // Delay a minimum of time serves when LCD is just plugged
-	LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	LPC_GPIO_PORT->SET[0] = DB5_PIN; // DB7=0, DB6=0, DB5=1, DB4=0, NU=0, EN=0, RW=0, RS=0
-	DelayUs(1);		 // Wait a minimum of 195ns
-	LPC_GPIO_PORT->CLR[0] = EN;		 // Clear EN finish write operation
-	DelayUs(100);	 // Delay a minimum of 100 us
-	DEINIT_BUS;		 //P0.[19:16] liberiamo ora i primi 4 pin
-	BitNum = 0;
-	PutCommand(ENTRY_MODE_INC_NO_SHIFT);
-	PutCommand(DISP_ON_CUR_ON_BLINK_ON);
-	PutCommand(DISPLAY_CLEAR);
-	DelayMs(2);*/
+   if( x >= lcd.ancholinea || y >= lcd.cantidadlineas ) {
+      return;
+   }
+   uint32_t firstCharAdress[] = { 0x800000, 0xC00000, 0x940000, 0xD40000 };   // See table 12-5
+   //lcdCommand( firstCharAdress[ y - 1 ] + x - 1 );         // Start in {x,y} = {1,1}
+   lcd16X2Command( firstCharAdress[y] + x );                 // Start in {x,y} = {0,0}
+   delayMs(1);      // Wait
+   lcd.x = x;
+   lcd.y = y;
 }
 
-
-void  InitLCD_4b_2L(void)
-{/*
-	LPC_SYSCON->SYSAHBCLKCTRL[0] |= 1<<6;   // Turn on clock to GPIO0
-	INIT_BUS;		 //P0.[23:20,1:0] definition: FULL_BUS_CLEAR; FULL_BUS_OUT
-	DelayMs(10);	 // Delay a minimum of time serves when LCD is just plugged
-	LPC_GPIO_PORT->SET[0] = EN;		 // Raise EN start write operation
-	LPC_GPIO_PORT->SET[0] = DB5_PIN; // DB7=0, DB6=0, DB5=1, DB4=0, 4-bit
-	DelayUs(1);		 // Wait a minimum of 195ns
-	LPC_GPIO_PORT->CLR[0] = EN;		 // Clear EN finish write operation
-
-	DEINIT_BUS;		 //P0.[19:16] liberiamo ora i primi 4 pin
-	DelayUs(100);	 // Delay a minimum of 100 us
-	BitNum = 0;
-	PutCommand(DISP_ON_CUR_ON_BLINK_ON);
-	PutCommand(ENTRY_MODE_INC_NO_SHIFT);
-	PutCommand(FOUR_BIT_TWO_LINE_5x8); // Select 2 line-Display
-	DelayUs(100);	 // Delay a minimum
-
-	PutCommand(DISPLAY_CLEAR);
-	DelayMs(2);*/
+void lcd16x2SendEnter(void)
+{
+   // Si llego abajo no hace nada
+   if( lcd.y >= lcd.cantidadlineas ) {
+      return;
+   } else {
+      lcd.x = 0;
+      lcd.y++;
+      lcd16x2GoToXY( lcd.x, lcd.y );
+   }
 }
+
+void lcd16x2SendChar( char character )
+{
+
+   if( character == '\r' ) {        // Ignore '\r'
+   } else if( character == '\n' ) { // Mando enter
+      lcd16x2SendEnter();
+   } else {
+      // Si se extiende en ancho mando enter
+      if( lcd.x >= lcd.ancholinea ) {
+         lcd16x2SendEnter();
+      }
+      // Mando el caracter
+      lcd16x2Data( character );
+      lcd.x++;
+   }
+}
+
+void lcd16x2SendString( char* str )
+{
+   uint32_t i = 0;
+   while( str[i] != 0 ) {
+      lcd16x2SendChar( str[i] );
+      i++;
+   }
+}
+
 
 /**************************************
  *****    Send a command to LCD     ****
@@ -411,5 +408,5 @@ void DisplayRight(unsigned char nplaces)
 		}*/
 }
 
-
+/*==================[fin del archivo]========================================*/
 // EOF

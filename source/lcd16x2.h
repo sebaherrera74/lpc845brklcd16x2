@@ -38,21 +38,6 @@
 #define OFFD0D7 0x00FF0000  // con esta macro puedo poner en '0' desde D0 a D7
 
 
-#define DATA_BUS		(15<<16 | 15<<20)	// P0.[23:16]
-#define DATA_BUS_LN		(15<<16)	// P0.[19:16]
-#define DB4_PIN_SHIFT	20			// DB4 is on P0.20
-#define DB4_PIN			(1<<20)		// DB4 is on P0.20
-#define DB5_PIN			(1<<21)		// DB5 is on P0.21
-#define CTRL_BUS		(EN+RS)
-#define FULL_BUS		(CTRL_BUS+DATA_BUS)
-
-//#define FULL_BUS_CLEAR	{LPC_GPIO_PORT->CLR[0] = FULL_BUS;}	// Full bus clear//
-//#define FULL_BUS_OUT	{LPC_GPIO_PORT->DIRSET[0] = FULL_BUS;}	// Full bus as output
-//#define INIT_BUS 		{FULL_BUS_CLEAR;FULL_BUS_OUT;}
-#define DEINIT_BUS 		{LPC_GPIO_PORT->DIRCLR0 = DATA_BUS_LN;}
-
-#define ISTR 0	//write to instruction register
-#define DATA 1	//write to data register
 
 #define LCD_LINE_LENGHT 80
 #define LCD_LINE_VISIBLE 16
@@ -96,12 +81,13 @@
 
 //++++  Functions  ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #define NUM_TO_CODE(num)		(num+0x30)			 // 0-9 ROM codes
-#define CODE_TO_NUM(code)		(code-0x30)         // 0-9 ROM num
+#define CODE_TO_NUM(code)		(code-0x30)          // 0-9 ROM num
 
 void WriteByte(unsigned char rs, int data_to_LCD);
-void InitLCD_4b_1L(void);
-void InitLCD_8b_1L(void);
-void  lcd16x2Init_8b_2L(void);
+
+
+void lcd16x2Init(uint16_t ancholinea, uint16_t cantidadlineas,uint16_t anchocaracter,uint16_t alturacaracter);
+
 
 //Escribe un nivel alto o bajo en el Pin del micro
 void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status);
@@ -114,9 +100,12 @@ void lcd16X2Command( uint32_t cmd );
 void lcd16X2Clear( void );
 void lcd16x2Data( uint32_t data );
 void lcd16x2SendStringRaw( char* str );
+void lcd16x2GoToXY(uint8_t x,uint8_t y);
+void lcd16x2SendEnter(void);
+void lcd16x2SendChar( char character );
+void lcd16x2SendString( char* str );
 
-
-void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
+//void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
 void WriteAscii(unsigned char symbol);
 void PutCommand(int Command);
 void GoToLine(unsigned char line);

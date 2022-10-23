@@ -84,7 +84,7 @@ int main(void) {
 
 	PRINTF("Hello World\n");
 
-	 lcd16x2Init_8b_2L();
+	 lcd16x2Init(16,2,5,8);
 
 
 	char string[5]={'H','o','l','a','\n'};
@@ -96,6 +96,9 @@ int main(void) {
 	 lcd16X2Clear();
 	 lcd16x2SendStringRaw(string);
 	 lcd16X2Clear();
+	 lcd16x2SendString( "Hola mundo todo bien" );
+	 lcd16X2Clear();
+
 
 	 while(1) {
 		delayMs(5000);
