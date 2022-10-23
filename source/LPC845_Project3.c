@@ -86,7 +86,18 @@ int main(void) {
 
 	 lcd16x2Init_8b_2L();
 
-	while(1) {
+
+	char string[5]={'H','o','l','a','\n'};
+	 lcd16x2SendStringRaw("Hola mundo todo bien");
+	 lcd16X2Clear();
+	 lcd16X2Command(D7);
+	 lcd16x2Data( 48 );
+	 lcd16x2Data( 65 );
+	 lcd16X2Clear();
+	 lcd16x2SendStringRaw(string);
+	 lcd16X2Clear();
+
+	 while(1) {
 		delayMs(5000);
 
 		LED_BLUE_TOGGLE();

@@ -106,6 +106,41 @@ void lcd16X2Command( uint32_t cmd ){
 
 }
 
+void lcd16x2Data( uint32_t data ){
+
+	data=data<<16;
+	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_alto );   // RS = 1 for command
+	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
+	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	delayMs(1);       // Wait
+	gpioMultOutputOn(GPIO,GPIO_PORT_0,data);
+
+	lcd16x2EnablePulse();
+	delayMs(1);       // Wait
+	//lcd16x2EnablePulse();
+	//gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	/*
+   lcdSendNibble( data & 0xF0 );         // Send high nibble to D7-D4
+
+   lcdPinSet( LCD_HD44780_RS, ON );    // RS = 1 for data
+   lcdPinSet( LCD_HD44780_RW, OFF );   // RW = 0 for write
+
+   lcdEnablePulse();
+
+   lcdSendNibble( data << 4 );           // Send low nibble to D7-D4
+   lcdEnablePulse();*/
+}
+
+// FUNCION MANDA TODO EL TEXTO
+void lcd16x2SendStringRaw( char* str ){
+   uint8_t i = 0;
+   while( str[i] != 0 ) {
+      lcd16x2Data( str[i] );
+      i++;
+   }
+}
+
+
 void lcd16X2Clear( void ){
 	lcd16X2Command( CLEAR );                   // Command 0x01 for clear LCD
 	delayMs(5);                               // Wait

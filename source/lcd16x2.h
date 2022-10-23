@@ -112,6 +112,8 @@ void lcd16x2EnablePulse( void );
 
 void lcd16X2Command( uint32_t cmd );
 void lcd16X2Clear( void );
+void lcd16x2Data( uint32_t data );
+void lcd16x2SendStringRaw( char* str );
 
 
 void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
