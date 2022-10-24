@@ -1,13 +1,15 @@
 /* ###################################################################
-**	Filename: HD44780.h
-**  Project: 
-**	Processor: LPC2103
-**	Compiler: gcc version 4.1.1
-**	Date: 16/11/2009
-**	Abstract:
-**		HD44780.h header file
-** ###################################################################*/
-
+ **	Filename: HD44780.c
+ **  Project:
+ **	Processor: LPC845brk
+ **	Compiler: gcc version 4.1.1
+ **	Date: /10/2022
+ **	Name: Sebastian Herrera
+ **	Abstract:
+ **		HD44780.c source file (user routines)
+ ** 	Modified:
+ ** 			InitLCD() function: initializing by instruction procedure
+ ** ###################################################################*/
 #ifndef __LCD16X2_H
 #define __LCD16X2_H
 /* MODULE LCD16X2 */

@@ -1,9 +1,10 @@
 /* ###################################################################
  **	Filename: HD44780.c
  **  Project:
- **	Processor: LPC2103
+ **	Processor: LPC845brk
  **	Compiler: gcc version 4.1.1
- **	Date: 16/11/2009
+ **	Date: /10/2022
+ **	Name: Sebastian Herrera
  **	Abstract:
  **		HD44780.c source file (user routines)
  ** 	Modified:
@@ -174,6 +175,7 @@ void lcd16x2SendChar( char character )
       lcd.x++;
    }
 }
+
 
 void lcd16x2SendString( char* str )
 {
@@ -384,10 +386,10 @@ void DisplayLeft(unsigned char nplaces)
 {/*
 	uint8_t i=0;
 
-	DelayMs(1);
+	delayMs(1);
 	while(i<nplaces)
 		{
-		PutCommand(DISPLAY_MOVE_SHIFT_LEFT);		// Mostra altri caratteri
+		lcd16X2Command(DISPLAY_MOVE_SHIFT_LEFT);		// Mostra altri caratteri
 		i++;
 		}*/
 }

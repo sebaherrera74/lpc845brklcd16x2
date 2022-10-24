@@ -98,7 +98,7 @@ int main(void) {
 	 lcd16X2Clear();
 	 lcd16x2SendString( "Hola mundo todo bien" );
 	 lcd16X2Clear();
-
+	 DisplayLeft(20);
 
 	 while(1) {
 		delayMs(5000);
