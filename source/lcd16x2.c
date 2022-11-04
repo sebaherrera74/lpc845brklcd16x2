@@ -169,6 +169,7 @@ void lcd16x2SendChar( char character )
       // Si se extiende en ancho mando enter
       if( lcd.x >= lcd.ancholinea ) {
          lcd16x2SendEnter();
+         lcd.x=0;
       }
       // Mando el caracter
       lcd16x2Data( character );
@@ -180,6 +181,8 @@ void lcd16x2SendChar( char character )
 void lcd16x2SendString( char* str )
 {
    uint32_t i = 0;
+   lcd.y=0;
+   lcd.x=0;
    while( str[i] != 0 ) {
       lcd16x2SendChar( str[i] );
       i++;
