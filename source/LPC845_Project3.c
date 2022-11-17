@@ -45,6 +45,24 @@
 #include "delay.h"
 
 
+
+const char tempChar[8] = {
+		0b00001110,
+		0b00001010,
+		0b00001010,
+		0b00001110,
+		0b00001110,
+		0b00010111,
+		0b00011111,
+		0b00001110
+};
+
+#define P0     0x0
+#define P1     0x2
+#define P2     0x40
+#define P3     0x8000
+#define P4     0x4000
+
 /*
  * @brief   Application entry point.
  */
@@ -70,12 +88,22 @@ int main(void) {
 	gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_28,GPIO_Nivel_bajo); //E
 
 
-	if (SysTick_Config(SystemCoreClock / 1000U))
+
+	//gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_0,GPIO_Nivel_bajo);
+	gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_1,GPIO_Nivel_bajo);
+	gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_6,GPIO_Nivel_bajo);
+	gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_14,GPIO_Nivel_bajo);
+	gpioInitOutput(GPIO,GPIO_PORT_0, GPIO_PORTPIN_0_15,GPIO_Nivel_bajo);
+
+
+	if (SysTick_Config(SystemCoreClock/1000U))
 	{
 		while (1)
 		{
 		}
 	}
+
+	lcd16x2CreateChar( 0, tempChar );
 
 #ifndef BOARD_INIT_DEBUG_CONSOLE_PERIPHERAL
 	/* Init FSL debug console. */
@@ -84,28 +112,52 @@ int main(void) {
 
 	PRINTF("Hello World\n");
 
-	 lcd16x2Init(16,2,5,8);
+	//lcd16x2Init(16,2,5,8);
+
+	lcd16x2Init4b(16,2,5,8);
+
+	//lcd16x2SendStringRaw( "Tmp" );
+	//lcd16x2Data(0);
+
+	char string[5]={'H','o','l','a',125};
+	//lcd16x2SendStringRaw("Hola mundo todo bien");
+	//lcd16X2Clear();
+	/*for (int i=34;i<191;i++){
+		 lcd16x2Data(i);
+		 delayMs(500);
+		 //lcd16X2Clear();
+	 }*/
 
 
-	char string[5]={'H','o','l','a','\n'};
-	 lcd16x2SendStringRaw("Hola mundo todo bien");
-	 lcd16X2Clear();
-	 lcd16X2Command(D7);
-	 lcd16x2Data( 48 );
-	 lcd16x2Data( 65 );
-	 lcd16X2Clear();
-	 lcd16x2SendStringRaw(string);
-	 lcd16X2Clear();
-	 lcd16x2SendString( "Hola mundo todo bien" );
-	 lcd16X2Clear();
-	 //DisplayLeft(20);
 
-	 while(1) {
-		delayMs(5000);
+	//lcd16X2Clear();
+
+	//lcd16x2SendStringRaw(string);
+	//lcd16X2Clear();
+	//lcd16x2SendString( "Hola mundo todo bien" );
+	//lcd16X2Clear();
+	//DisplayLeft(20);
+
+
+
+
+	while(1) {
+		delayMs(1000);
+
+
+		gpioOutputOff(GPIO,GPIO_PORT_0,GPIO_PORTPIN_0_1);
+		gpioOutputOff(GPIO,GPIO_PORT_0,GPIO_PORTPIN_0_6);
+		gpioOutputOff(GPIO,GPIO_PORT_0,GPIO_PORTPIN_0_14);
+		gpioOutputOff(GPIO,GPIO_PORT_0,GPIO_PORTPIN_0_15);
 		lcd16X2Clear();
 		LED_BLUE_TOGGLE();
 		lcd16X2Clear();
 		lcd16x2SendString( "Hola mundo todo bien" );
+		gpioMultOutputOn(GPIO,GPIO_PORT_0,P1|P2|P3|P4);
+		//gpioMultOutputOn(GPIO,GPIO_PORT_0,P2);
+		//gpioMultOutputOn(GPIO,GPIO_PORT_0,P3);
+		//gpioMultOutputOn(GPIO,GPIO_PORT_0,P4);
+
 
 	}
 	return 0 ;

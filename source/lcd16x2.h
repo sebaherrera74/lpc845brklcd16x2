@@ -41,6 +41,12 @@
 
 
 
+#define D44B   0x2    // DB4 para inicializacion con 4 pines esta conectado al pin 38 ->PIO_01
+#define D54B   0x40   // DB5 para inicializacion con 4 pines esta conectado al pin 33 ->PIO_06
+#define D64B   0x8000 // DB6 para inicializacion con 4 pines esta conectado al pin 28 ->PIO_15
+#define D74B   0x4000 // DB7 para inicializacion con 4 pines esta conectado al pin 27 ->PIO_14
+
+
 #define LCD_LINE_LENGHT 80
 #define LCD_LINE_VISIBLE 16
 
@@ -78,6 +84,8 @@
 //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
 #define CGRAM_ADDRESS(addr)		(addr = addr|0x40)		 // CGRAM addressing
+#define E_SET_CGRAM_ADDR        0x0040000
+
 #define LINE1_HOME		0x0080		 // DDRAM addressing
 #define LINE2_HOME		0xC0		 // DDRAM addressing
 
@@ -89,7 +97,9 @@ void WriteByte(unsigned char rs, int data_to_LCD);
 
 
 void lcd16x2Init(uint16_t ancholinea, uint16_t cantidadlineas,uint16_t anchocaracter,uint16_t alturacaracter);
+//Inicializacion con 4 bits
 
+void lcd16x2Init4b(uint16_t ancholinea,uint16_t cantidadlineas,uint16_t anchocaracter,uint16_t alturacaracter);
 
 //Escribe un nivel alto o bajo en el Pin del micro
 void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status);
@@ -106,6 +116,10 @@ void lcd16x2GoToXY(uint8_t x,uint8_t y);
 void lcd16x2SendEnter(void);
 void lcd16x2SendChar( char character );
 void lcd16x2SendString( char* str );
+
+void lcd16x2CreateChar( uint8_t charnum, const char* chardata );
+
+
 
 //void InitLCD_8b_2L(void); // Use only with 5V separate supply or Charge Pump
 void WriteAscii(unsigned char symbol);

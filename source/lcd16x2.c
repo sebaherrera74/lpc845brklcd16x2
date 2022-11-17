@@ -48,9 +48,9 @@ void lcd16x2Init(uint16_t ancholinea,uint16_t cantidadlineas,
 
 
 	// Configure LCD for 8-bit mode
-	lcd16x2PinSet( GPIO_PORTPIN_0_27, GPIO_Nivel_bajo);     // RW = 0
-	lcd16x2PinSet(  GPIO_PORTPIN_0_26,GPIO_Nivel_bajo);     // RS = 0
-	lcd16x2PinSet( GPIO_PORTPIN_0_28, GPIO_Nivel_bajo);     // EN = 0
+	lcd16x2PinSet(GPIO_PORTPIN_0_27,GPIO_Nivel_bajo);     // RW = 0
+	lcd16x2PinSet(GPIO_PORTPIN_0_26,GPIO_Nivel_bajo);     // RS = 0
+	lcd16x2PinSet(GPIO_PORTPIN_0_28,GPIO_Nivel_bajo);     // EN = 0
 
 	lcd16X2Command(D5|D4 );
 	delayMs(25);                    // Wait
@@ -78,6 +78,56 @@ void lcd16x2Init(uint16_t ancholinea,uint16_t cantidadlineas,
 }
 
 
+void lcd16x2Init4b(uint16_t ancholinea,uint16_t cantidadlineas,
+		uint16_t anchocaracter,uint16_t alturacaracter){
+	lcd.ancholinea=ancholinea;
+	lcd.cantidadlineas=cantidadlineas;
+	lcd.anchocaracter=anchocaracter;
+	lcd.alturacaracter=alturacaracter;
+	lcd.x=0;
+	lcd.y=0;
+
+	// Configure LCD for 8-bit mode
+		lcd16x2PinSet(GPIO_PORTPIN_0_27,GPIO_Nivel_bajo);     // RW = 0
+		lcd16x2PinSet(GPIO_PORTPIN_0_26,GPIO_Nivel_bajo);     // RS = 0
+		lcd16x2PinSet(GPIO_PORTPIN_0_28,GPIO_Nivel_bajo);     // EN = 0
+
+		lcd16X2Command(D44B|D54B);
+		delayMs(25);                    // Wait
+
+		lcd16X2Command(D44B|D54B );
+		delayMs(25);                   // Wait
+
+		lcd16X2Command(D44B|D54B );
+		delayMs(25);
+
+		// Initialize LCD
+		//Se informa el tipo de interfaz que se va a usar, 4 o 8 bits(D4=1 8bits). La
+		//cantidad de líneas (D3=1 2 lineas). La fuente de caracter 5x8 dots o 5x10 (D2=1)dots.
+		lcd16X2Command( D54B);                 // Command 0x0E for display on, cursor on
+		delayMs(25);
+
+		lcd16X2Command( D54B);
+		lcd16X2Command( D74B| D64B);
+		delayMs(25);
+		//Configura el estado ON/OFF del display (D2=1 enciende display), el estado del cursor (D1 =1 avtiva cursor)
+		//el parpadeo del caracter en la posición del cursor(D0=1 parpadea caracter).
+		lcd16X2Command(0);                   // Command 0x06 for Shift cursor right
+		lcd16X2Command( D74B);
+		delayMs(25);
+
+		lcd16X2Command(0);                   // Command 0x06 for Shift cursor right
+				lcd16X2Command( D44B);
+				delayMs(25);
+
+		// Wait
+		//lcd16X2Command(D44B);
+
+		lcd16X2Command(0);
+		lcd16X2Command(D74B|D64B|D54B|D44B);
+		delayMs(10);
+}
+
 void lcd16x2PinSet( gpio_portpin_en pin,gpio_nivel_logico status){
 
 	gpioOutputWrite(GPIO ,GPIO_PORT_0,pin,status);
@@ -94,7 +144,8 @@ void lcd16x2EnablePulse( void ){
 
 void lcd16X2Command( uint32_t cmd ){
 
-	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	//gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	gpioMultOutputOff(GPIO,GPIO_PORT_0,cmd);
 	delayMs(1);       // Wait
 	gpioMultOutputOn(GPIO,GPIO_PORT_0,cmd);
 	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_bajo );   // RS = 0 for command
@@ -102,14 +153,14 @@ void lcd16X2Command( uint32_t cmd ){
 	lcd16x2EnablePulse();
 	delayMs(1);       // Wait
 	//lcd16x2EnablePulse();
-	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
-
+	//gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
+	gpioMultOutputOff(GPIO,GPIO_PORT_0,cmd);
 }
 
 void lcd16x2Data( uint32_t data ){
 
 	data=data<<16;                   //Es porque quiero manejar desde el pin 16 (D0)  al pin 23 (D7)
-	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_alto );   // RS = 1 for command
+	lcd16x2PinSet( GPIO_PORTPIN_0_26, GPIO_Nivel_alto );   // RS = 1 for data
 	lcd16x2PinSet(  GPIO_PORTPIN_0_27,GPIO_Nivel_bajo );   // RW = 0 for write
 	gpioMultOutputOff(GPIO,GPIO_PORT_0,OFFD0D7);
 	delayMs(1);       // Wait
@@ -188,6 +239,21 @@ void lcd16x2SendString( char* str )
       i++;
    }
 }
+
+void lcd16x2CreateChar( uint8_t charnum, const char* chardata )
+{
+   uint8_t i;
+   charnum &= 0x07;
+   lcd16X2Command( E_SET_CGRAM_ADDR | (charnum << 3) );
+   for (i = 0; i < 8; i++) {
+	   lcd16x2Data( chardata[i] );
+   }
+   delayMs(1);
+}
+
+
+
+
 
 
 /**************************************
